@@ -1,0 +1,5 @@
+django-cors-headers==2.4.0
+redis==3.0.1
+requests==2.21.0
+PyJWT
+channels

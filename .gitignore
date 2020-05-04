@@ -1,0 +1,16 @@
+# react
+frontend/node_modules
+
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+migrations/
+media
+
+# Visual Studio Code # 
+.vscode/
+codeFight/.vscode/
+frontend/.vscode/
