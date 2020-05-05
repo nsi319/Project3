@@ -12,54 +12,54 @@ import {useToasts} from 'react-toast-notifications';
 import {dataFetch} from '../../utils/dataFetch';
 
 function removeAscii(string) {
-    return string.replace(/[^\x00-\x7F]/g, '');
+	return string.replace(/[^\x00-\x7F]/g, '');
 }
 
-function validate(name,username, email, password, repeat, phoneNumber) {
+function validate(name, username, email, password, repeat, phoneNumber) {
 	let errors = [];
 	if (!name) {
-        errors.push('Name field is empty');
-    }
-    if (!username) {
-        errors.push('Username field is empty');
-    }
-    if (username.length < 5 || username.length > 25) {
-        errors.push('Username field should be between 5 and 25 characters long');
-    }
-    if (!email) {
-        errors.push('Email field is empty');
-    }
-    if (!password) {
-        errors.push('Password field is empty');
-    }
-    if (!repeat && password) {
-        errors.push('Confirm password field is empty');
-    }
-    if (!phoneNumber) {
-        errors.push('Contact Number field is empty');
-    }
-    if (repeat !== password && password) {
-        errors.push('Passwords do not match');
-    }
-    let re = /^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$/;
-    if (!re.test(email) && email && email !== removeAscii(email)) {
-        errors.push('Incorrect email address');
-    }
-    re = /^(\+91)?[0-9 ]{10}/;
-    if (!re.test(phoneNumber) && phoneNumber && phoneNumber !== removeAscii(phoneNumber)) {
-        errors.push('Incorrect contact number');
-    }
-    re = /^(?=.*\d)(?!.*\s).{6,32}$/;
-    if (!re.test(password) && password) {
-        errors.push('Make your password more secure');
-    }
-    if (username !== removeAscii(username)) {
-        errors.push('Incorrect username');
-    }
-    if (errors.length > 0) {
-        return errors;
-    }
-    return true;
+		errors.push('Name field is empty');
+	}
+	if (!username) {
+		errors.push('Username field is empty');
+	}
+	if (username.length < 5 || username.length > 25) {
+		errors.push('Username field should be between 5 and 25 characters long');
+	}
+	if (!email) {
+		errors.push('Email field is empty');
+	}
+	if (!password) {
+		errors.push('Password field is empty');
+	}
+	if (!repeat && password) {
+		errors.push('Confirm password field is empty');
+	}
+	if (!phoneNumber) {
+		errors.push('Contact Number field is empty');
+	}
+	if (repeat !== password && password) {
+		errors.push('Passwords do not match');
+	}
+	let re = /^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$/;
+	if (!re.test(email) && email && email !== removeAscii(email)) {
+		errors.push('Incorrect email address');
+	}
+	re = /^(\+91)?[0-9 ]{10}/;
+	if (!re.test(phoneNumber) && phoneNumber && phoneNumber !== removeAscii(phoneNumber)) {
+		errors.push('Incorrect contact number');
+	}
+	re = /^(?=.*\d)(?!.*\s).{6,32}$/;
+	if (!re.test(password) && password) {
+		errors.push('Make your password more secure');
+	}
+	if (username !== removeAscii(username)) {
+		errors.push('Incorrect username');
+	}
+	if (errors.length > 0) {
+		return errors;
+	}
+	return true;
 }
 
 const CssTextField = withStyles({
@@ -124,14 +124,14 @@ export const Register = () => {
 	const {addToast} = useToasts();
 
 	const onSubmit = () => {
-		let validation = validate(name,userName,email,password,repeat,phno)
-		if( Array.isArray(validation) ){
+		let validation = validate(name, userName, email, password, repeat, phno);
+		if (Array.isArray(validation)) {
 			addToast(validation[0], {
 				appearance: 'error',
 				autoDismiss: true,
 				autoDismissTimeout: 2000,
 			});
-			return
+			return;
 		}
 		dataFetch('user/register', {
 			name: name,
@@ -148,11 +148,11 @@ export const Register = () => {
 						autoDismissTimeout: 2000,
 					});
 				} else {
-						addToast(response.message, {
-							appearance: 'error',
-							autoDismiss: true,
-							autoDismissTimeout: 2000,
-						});
+					addToast(response.message, {
+						appearance: 'error',
+						autoDismiss: true,
+						autoDismissTimeout: 2000,
+					});
 				}
 			})
 			.catch((err) => {
@@ -250,17 +250,17 @@ export const Register = () => {
 						</Grid>
 						<Grid item xs={12}>
 							<CssTextField
-								variant='outlined'
+								variant="outlined"
 								required
 								fullWidth
-								name='repeat'
-								label='Confirm Password'
-								type='password'
-								id='repeat'
-								onChange={e => {
+								name="repeat"
+								label="Confirm Password"
+								type="password"
+								id="repeat"
+								onChange={(e) => {
 									setRepeat(e.target.value);
 								}}
-								autoComplete='current-repeat'
+								autoComplete="current-repeat"
 							/>
 						</Grid>
 					</Grid>

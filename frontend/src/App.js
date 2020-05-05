@@ -4,7 +4,7 @@ import {ToastProvider} from 'react-toast-notifications';
 import {NotFound} from './pages/NotFound';
 import {LoginRegister} from './pages/LoginRegister';
 import {PrivateRoute} from './components/PrivateRoute';
-import { Home } from './pages/HomePage/Home';
+import {Home} from './pages/HomePage';
 
 function App() {
 	return (
