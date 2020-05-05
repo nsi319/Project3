@@ -120,4 +120,4 @@ export const LoginRegister = () => {
 			</SwipeableViews>
 		</Paper>
 	);
-}
+};
