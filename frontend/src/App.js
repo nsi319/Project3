@@ -5,6 +5,7 @@ import {NotFound} from './pages/NotFound';
 import {LoginRegister} from './pages/LoginRegister';
 import {PrivateRoute} from './components/PrivateRoute';
 import {Home} from './pages/HomePage';
+import {GameCanva} from './components/Game/Game';
 
 function App() {
 	return (
@@ -12,6 +13,7 @@ function App() {
 			<Router>
 				<Switch>
 					<Redirect exact from="/" to="/login" />
+					<Route exact path="/testgame" component={GameCanva} />
 					<Route exact path="/login" component={LoginRegister} />
 					<Route exact path="/home" component={Home} />
 					<Route path="*" component={NotFound} />
