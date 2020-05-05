@@ -4,6 +4,7 @@ import {ToastProvider} from 'react-toast-notifications';
 import {NotFound} from './pages/NotFound';
 import {LoginRegister} from './pages/LoginRegister';
 import {PrivateRoute} from './components/PrivateRoute';
+import { Home } from './pages/HomePage/Home';
 
 function App() {
 	return (
@@ -12,6 +13,7 @@ function App() {
 				<Switch>
 					<Redirect exact from="/" to="/login" />
 					<Route exact path="/login" component={LoginRegister} />
+					<Route exact path="/home" component={Home} />
 					<Route path="*" component={NotFound} />
 				</Switch>
 			</Router>
