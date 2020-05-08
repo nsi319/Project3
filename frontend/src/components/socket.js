@@ -1,17 +1,18 @@
 import React , { useEffect, useState } from "react";
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 export default function Socket(){
 
     const [val,setVal] = useState("");
     const path = 'ws://localhost:8000/ws/chat';
-    const socketRef = new WebSocket(path);
+    const socketRef = new ReconnectingWebSocket(path);
     socketRef.onopen = () => {
         console.log('WebSocket open');
     };
     socketRef.onmessage = e => {
         let data = JSON.parse(e.data);
         console.log("in",data);
-        document.getElementById("msg").innerHTML=data;
+        setVal(data)
     };
 
     socketRef.onerror = e => {

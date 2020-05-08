@@ -14,7 +14,6 @@ function App() {
 			<Router>
 				<Switch>
 					<Redirect exact from="/" to="/login" />
-					<Route exact path="/testgame" component={GameCanva} />
 					<Route exact path="/login" component={LoginRegister} />
 					<Route exact path="/home" component={Home} />
 					<Route exact path="/testsocket" component={Socket}/>

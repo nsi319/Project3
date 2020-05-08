@@ -4,7 +4,7 @@ import {Editor} from '../../components/Editor';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import {makeStyles} from '@material-ui/core/styles';
-import {GameCanva} from '../../components/Game/Game';
+import {GameCanvas} from '../../components/Game';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -45,7 +45,7 @@ export function Home() {
 						</Paper>
 					</Grid>
 					<Grid item xs={7} id="mydiv">
-						<GameCanva />
+						<GameCanvas />
 					</Grid>
 				</Grid>
 			</main>
