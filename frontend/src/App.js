@@ -6,6 +6,7 @@ import {LoginRegister} from './pages/LoginRegister';
 import {PrivateRoute} from './components/PrivateRoute';
 import {Home} from './pages/HomePage';
 import {GameCanva} from './components/Game/Game';
+import Socket from './components/socket';
 
 function App() {
 	return (
@@ -16,6 +17,7 @@ function App() {
 					<Route exact path="/testgame" component={GameCanva} />
 					<Route exact path="/login" component={LoginRegister} />
 					<Route exact path="/home" component={Home} />
+					<Route exact path="/testsocket" component={Socket}/>
 					<Route path="*" component={NotFound} />
 				</Switch>
 			</Router>

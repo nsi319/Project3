@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'corsheaders',
     'user'
 ]
@@ -75,7 +76,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'codeFight.wsgi.application'
+ASGI_APPLICATION = "codeFight.channels_app.routing.application"
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": ['redis://localhost:6379/4']
+        }
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases

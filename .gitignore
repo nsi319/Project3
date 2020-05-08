@@ -10,6 +10,7 @@ __pycache__
 db.sqlite3
 migrations/
 media
+codeFight/venv/
 
 # Visual Studio Code # 
 .vscode/
