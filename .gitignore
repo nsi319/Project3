@@ -16,3 +16,6 @@ codeFight/venv/
 .vscode/
 codeFight/.vscode/
 frontend/.vscode/
+
+dump.rdb
+map.png

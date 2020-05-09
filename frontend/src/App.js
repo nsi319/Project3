@@ -16,7 +16,7 @@ function App() {
 					<Redirect exact from="/" to="/login" />
 					<Route exact path="/login" component={LoginRegister} />
 					<Route exact path="/home" component={Home} />
-					<Route exact path="/testsocket" component={Socket}/>
+					<Route exact path="/testsocket" component={Socket} />
 					<Route path="*" component={NotFound} />
 				</Switch>
 			</Router>

@@ -34,21 +34,9 @@ export function Home() {
 	const classes = useStyles();
 
 	return (
-		<div className={classes.root}>
+		<div>
 			<Sidenav />
-			<main className={classes.content}>
-				<div className={classes.toolbar} />
-				<Grid container spacing={1}>
-					<Grid item xs={5}>
-						<Paper className={classes.paper}>
-							<Editor />
-						</Paper>
-					</Grid>
-					<Grid item xs={7} id="mydiv">
-						<GameCanvas />
-					</Grid>
-				</Grid>
-			</main>
+			<GameCanvas />
 		</div>
 	);
 }
