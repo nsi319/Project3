@@ -4,7 +4,7 @@ import {Editor} from '../../components/Editor';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import {makeStyles} from '@material-ui/core/styles';
-import {GameCanva} from '../../components/Game/Game';
+import {GameCanvas} from '../../components/Game';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -34,21 +34,9 @@ export function Home() {
 	const classes = useStyles();
 
 	return (
-		<div className={classes.root}>
+		<div>
 			<Sidenav />
-			<main className={classes.content}>
-				<div className={classes.toolbar} />
-				<Grid container spacing={1}>
-					<Grid item xs={5}>
-						<Paper className={classes.paper}>
-							<Editor />
-						</Paper>
-					</Grid>
-					<Grid item xs={7} id="mydiv">
-						<GameCanva />
-					</Grid>
-				</Grid>
-			</main>
+			<GameCanvas />
 		</div>
 	);
 }

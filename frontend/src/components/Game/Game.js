@@ -1,159 +1,132 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect, useRef} from 'react';
 import Phaser from 'phaser';
-import sky from '../../assets/sky.png';
-import ground from '../../assets/platform.png';
-import star from '../../assets/star.png';
-import bomb from '../../assets/bomb.png';
-import dude from '../../assets/dude.png';
+import Map from '../../assets/scotlandYard/map.png';
 import {IonPhaser} from '@ion-phaser/react';
 
-var config = {
-	type: Phaser.AUTO,
-	width: '100%',
-	height: 500,
-	scale: {
-		parent: 'mydiv',
-		mode: Phaser.Scale.FIT,
-		width: '100%',
-		height: 500,
-	},
-	physics: {
-		default: 'arcade',
-		arcade: {
-			gravity: {y: 300},
-			debug: false,
-		},
-	},
-	scene: {
-		preload: preload,
-		create: create,
-		update: update,
-	},
+const imageProperties = {
+	width: 2690,
+	height: 2046,
+	offset:55
+};
+const canvasProperties = {
+	width: 786,
+	height: 600,
 };
 
-var game = new Phaser.Game(config);
+export function GameCanvas() {
+	const mapRef = useRef();
 
-function preload() {
-	this.textures.addBase64('sky', sky);
-	this.textures.addBase64('ground', ground);
-	this.load.image('ground', 'assets/platform.png');
-	this.textures.addBase64('star', star);
-	this.textures.addBase64('bomb', bomb);
-	var shardsImg = new Image();
-	shardsImg.onload = () => {
-		this.textures.addSpriteSheet('dude', shardsImg, {frameWidth: 32, frameHeight: 48});
-	};
-	shardsImg.src = dude;
-}
-var platforms, player, stars, bombs, gameOver;
-var score = 0;
-var scoreText;
+	useEffect(() => {
+		const {current} = mapRef;
+		let canvas = document.getElementById('canvas');
+		let ctx = canvas.getContext('2d');
 
-function create() {
-	this.add.image(0, 0, 'sky').setOrigin(0, 0);
-	this.add.image(400, 300, 'star');
-	platforms = this.physics.add.staticGroup();
+		let cameraOffset = {x: canvasProperties.width / 2, y: canvasProperties.height / 2};
+		let cameraZoom = 0.63;
+		let MAX_ZOOM = 2.5;
+		let MIN_ZOOM = 0.3;
+		let SCROLL_SENSITIVITY = 0.0005;
 
-	platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+		function draw() {
+			canvas.width = canvasProperties.width;
+			canvas.height = canvasProperties.height;
 
-	platforms.create(600, 400, 'ground');
-	platforms.create(50, 250, 'ground');
-	platforms.create(750, 220, 'ground');
-	player = this.physics.add.sprite(100, 450, 'dude');
+			ctx.translate(canvasProperties.width / 2, canvasProperties.height / 2);
+			ctx.scale(cameraZoom, cameraZoom);
+			ctx.translate(-canvasProperties.width / 2 + cameraOffset.x, -canvasProperties.height / 2 + cameraOffset.y);
+			ctx.clearRect(0, 0, canvasProperties.width, canvasProperties.height);
+			ctx.drawImage(current, -canvasProperties.width, -canvasProperties.height);
+			// ctx.fillRect(-canvasProperties.width+317+imageProperties.offset, -canvasProperties.height+78+imageProperties.offset,10,10)
+			requestAnimationFrame(draw);
+		}
 
-	player.setBounce(0.2);
-	player.setCollideWorldBounds(true);
+		function getEventLocation(e) {
+			if (e.touches && e.touches.length == 1) {
+				return {x: e.touches[0].clientX, y: e.touches[0].clientY};
+			} else if (e.clientX && e.clientY) {
+				return {x: e.clientX, y: e.clientY};
+			}
+		}
 
-	this.anims.create({
-		key: 'left',
-		frames: this.anims.generateFrameNumbers('dude', {start: 0, end: 3}),
-		frameRate: 10,
-		repeat: -1,
-	});
+		let isDragging = false;
+		let dragStart = {x: 0, y: 0};
 
-	this.anims.create({
-		key: 'turn',
-		frames: [{key: 'dude', frame: 4}],
-		frameRate: 20,
-	});
+		function onPointerDown(e) {
+			isDragging = true;
+			dragStart.x =  getEventLocation(e).x / cameraZoom - cameraOffset.x;
+			dragStart.y = getEventLocation(e).y / cameraZoom - cameraOffset.y;
+		}
 
-	this.anims.create({
-		key: 'right',
-		frames: this.anims.generateFrameNumbers('dude', {start: 5, end: 8}),
-		frameRate: 10,
-		repeat: -1,
-	});
-	this.physics.add.collider(player, platforms);
-	stars = this.physics.add.group({
-		key: 'star',
-		repeat: 11,
-		setXY: {x: 12, y: 0, stepX: 70},
-	});
+		function onPointerUp(e) {
+			isDragging = false;
+			initialPinchDistance = null;
+			lastZoom = cameraZoom;
+		}
 
-	stars.children.iterate(function (child) {
-		child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-	});
-	this.physics.add.collider(stars, platforms);
-	this.physics.add.overlap(player, stars, collectStar, null, this);
-	scoreText = this.add.text(16, 16, 'score: 0', {fontSize: '32px', fill: '#000'});
-	bombs = this.physics.add.group({
-		key: 'bomb',
-		repeat: 5,
-		setXY: {x: 15, y: 0, stepX: 80},
-	});
+		function onPointerMove(e) {
+			if (isDragging) {
+				cameraOffset.x = getEventLocation(e).x / cameraZoom - dragStart.x;
+				cameraOffset.y = getEventLocation(e).y / cameraZoom - dragStart.y;
+			}
+		}
 
-	this.physics.add.collider(bombs, platforms);
+		function handleTouch(e, singleTouchHandler) {
+			if (e.touches.length == 1) {
+				singleTouchHandler(e);
+			} else if (e.type == 'touchmove' && e.touches.length == 2) {
+				isDragging = false;
+				handlePinch(e);
+			}
+		}
 
-	this.physics.add.collider(player, bombs, hitBomb, null, this);
-}
-function hitBomb(player, bomb) {
-	this.physics.pause();
+		let initialPinchDistance = null;
+		let lastZoom = cameraZoom;
 
-	player.setTint(0xff0000);
+		function handlePinch(e) {
+			e.preventDefault();
 
-	player.anims.play('turn');
+			let touch1 = {x: e.touches[0].clientX, y: e.touches[0].clientY};
+			let touch2 = {x: e.touches[1].clientX, y: e.touches[1].clientY};
 
-	gameOver = true;
-}
-function collectStar(player, star) {
-	star.disableBody(true, true);
-	score += 10;
-	scoreText.setText('Score: ' + score);
-	if (stars.countActive(true) === 0) {
-		stars.children.iterate(function (child) {
-			child.enableBody(true, child.x, 0, true, true);
-		});
+			let currentDistance = (touch1.x - touch2.x) ** 2 + (touch1.y - touch2.y) ** 2;
 
-		var x = player.x < 400 ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+			if (initialPinchDistance == null) {
+				initialPinchDistance = currentDistance;
+			} else {
+				adjustZoom(null, currentDistance / initialPinchDistance);
+			}
+		}
 
-		var bomb = bombs.create(x, 16, 'bomb');
-		bomb.setBounce(1);
-		bomb.setCollideWorldBounds(true);
-		bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-	}
-}
+		function adjustZoom(zoomAmount, zoomFactor) {
+			if (!isDragging) {
+				if (zoomAmount) {
+					cameraZoom += zoomAmount;
+				} else if (zoomFactor) {
+					cameraZoom = zoomFactor * lastZoom;
+				}
+				cameraZoom = Math.min(cameraZoom, MAX_ZOOM);
+				cameraZoom = Math.max(cameraZoom, MIN_ZOOM);
+			}
+		}
 
-function update() {
-	var cursors = this.input.keyboard.createCursorKeys();
-	if (cursors.left.isDown) {
-		player.setVelocityX(-160);
+		canvas.addEventListener('mousedown', onPointerDown);
+		canvas.addEventListener('touchstart', (e) => handleTouch(e, onPointerDown));
+		canvas.addEventListener('mouseup', onPointerUp);
+		canvas.addEventListener('touchend', (e) => handleTouch(e, onPointerUp));
+		canvas.addEventListener('mousemove', onPointerMove);
+		canvas.addEventListener('touchmove', (e) => handleTouch(e, onPointerMove));
+		canvas.addEventListener('wheel', (e) => adjustZoom(e.deltaY * SCROLL_SENSITIVITY));
 
-		player.anims.play('left', true);
-	} else if (cursors.right.isDown) {
-		player.setVelocityX(160);
-
-		player.anims.play('right', true);
-	} else {
-		player.setVelocityX(0);
-
-		player.anims.play('turn');
-	}
-
-	if (cursors.up.isDown) {
-		player.setVelocityY(-330);
-	}
-}
-
-export function GameCanva() {
-	return <IonPhaser game={game} initialize={false}></IonPhaser>;
+		draw();
+	}, []);
+	return (
+		<>
+			<canvas
+				id="canvas"
+				width={1200}
+				height={912}
+				style={{backgroundColor: 'black', marginTop: '75px', marginLeft: '90px', cursor:'move'}}></canvas>
+			<img src={Map} hidden={true} ref={mapRef} />
+		</>
+	);
 }
